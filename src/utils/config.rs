@@ -12,7 +12,7 @@ use std::os::windows::fs::symlink_dir;
 
 use std::io::prelude::*;
 
-
+/// the configuration for the entire path manager, saves to file
 pub struct Config {
 	config_map: HashMap<String, Vec<ConfigEntry>>,
 	active_configs: HashMap<String, String>, // (entry.name, entry.path)
@@ -22,6 +22,25 @@ pub struct Config {
 
 impl Config {
 	
+	pub fn new(cmd_dir: String) -> Config {
+		return Config {
+				active_configs: HashMap::new(),
+				config_map: HashMap::new(),
+				links: Vec::new(),
+				cmd_dir_str: String::from("")
+		};
+	}
+	
+	/// gets the command directory as a string literal, may not be a full absolute path 
+	pub fn cmd_dir_str(&self) -> &String {
+		return &self.cmd_dir_str;
+	}
+	/// set command directory as string literal, may be a relative path
+	pub fn set_cmd_dir_str(&mut self, val: String) {
+		self.cmd_dir_str = val;
+	}
+	
+	/// the command directory as absolute path. 
 	pub fn cmd_dir(&self) -> PathBuf {
 		let mut cmd_dir = PathBuf::from(&self.cmd_dir_str);
 		
@@ -35,21 +54,27 @@ impl Config {
 		return cmd_dir;
 	}
 	
-	pub fn config_entry(&self, name: &String) -> Option<&Vec<ConfigEntry>> {
+	/// configuration entries by string name
+	pub fn config_entrys_by_name(&self, name: &String) -> Option<&Vec<ConfigEntry>> {
 		return self.config_map.get(name);
 	}
 	
+	/// the Hashmap of all configuration entries, these are held by name -> vec
 	pub fn config_map(&self) -> &HashMap<String, Vec<ConfigEntry>> {
 		return &self.config_map;
 	}
+	
+	/// all standalone links
 	pub fn links(&self) -> &Vec<Link> {
 		return &self.links;
 	}
 	
+	/// all active configurations
 	pub fn active_configs(&self) -> &HashMap<String, String> {
 		return &self.active_configs;
 	}
 	
+	/// retrives the current ConfigEntry for the given name
 	pub fn active_config_entry(&self, name: &String) -> Option<&ConfigEntry> {
 		let cfg_vec = self.config_map.get(name);
 		if cfg_vec.is_none() {
@@ -65,6 +90,7 @@ impl Config {
 		return None;
 	}
 	
+	/// checks if the ConfigEntry is seen as active
 	pub fn is_active(&self, cfg_entry: &ConfigEntry) -> bool {
 		self.config_map.keys();
 		match self.active_configs.get(&cfg_entry.name) {
@@ -73,6 +99,7 @@ impl Config {
 		}
 	}
 	
+	/// changes the current active configuration
 	pub fn set_active(&mut self, name: &String, base_path: &String) {
 		self.active_configs.insert(name.clone(), base_path.clone());
 	}
@@ -160,14 +187,14 @@ impl Config {
 	/**
 	Reads the config file and returns a config object
 	*/
-	pub fn read() -> Result<Config, io::Error> {
+	pub fn read() -> Result<Option<Config>, io::Error> {
 		
 		let config_path = try!(Config::cfg_path());
 		
 		let mut active_configs = HashMap::new();
 		let mut links = Vec::new();
 		let mut configs = HashMap::new(); // config objects which will be returned
-		let mut cmd_dir_str = String::from("cmd");
+		let mut cmd_dir_str;
 		
 		if config_path.exists() {
 			let file = try!(File::open(config_path));
@@ -182,6 +209,8 @@ impl Config {
 			try!(Config::_read_active_configs(&mut active_configs, &mut reader));
 			try!(Config::_read_links(&mut links, &mut reader));
 			try!(Config::_read_configs(&mut configs, &mut reader));
+		} else {
+			return Ok(None);
 		}
 		
 		let config = Config {
@@ -199,7 +228,7 @@ impl Config {
 		}
 		
 		
-		return Ok(config);
+		return Ok(Some(config));
 	}
 	
 	

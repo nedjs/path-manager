@@ -4,7 +4,7 @@ use std;
 use std::io::prelude::*;
 
 
-pub const DESCRIPTION: &'static str = "updates the current installation for a configuration group";
+pub const DESCRIPTION: &'static str = "Updates the current installation for a configuration group";
 
 pub fn print_usage() {
 	println!("Usage: pman swap [name] <priority>\n\
@@ -14,7 +14,7 @@ pub fn print_usage() {
 			 \0              eg: cfg.priority>=priority. For the highest priority pass -1, for the lowest pass 0.");
 }
 
-pub fn swap(mut config: &mut Config, args: &[String]) {
+pub fn run(mut config: Config, args: &[String]) {
 	
 	if args.len() == 0 {
 		println!("Expected additional argument [name]");
@@ -23,15 +23,13 @@ pub fn swap(mut config: &mut Config, args: &[String]) {
 		
 		let cfg_to_activate: Option<ConfigEntry>;
 		if args.len() == 1 {
-			{			
-				cfg_to_activate = prompt_swap(&config, &args[0]);
-				if cfg_to_activate.is_none() {
-						println!("Invalid selection");
-						std::process::exit(1);
-				}
+			cfg_to_activate = prompt_swap(&config, &args[0]);
+			if cfg_to_activate.is_none() {
+					println!("Invalid selection");
+					std::process::exit(1);
 			}
 		} else {
-			let cfg_vec:&Vec<ConfigEntry> = config.config_entry(&args[0]).unwrap_or_else(||{
+			let cfg_vec:&Vec<ConfigEntry> = config.config_entrys_by_name(&args[0]).unwrap_or_else(||{
 				println!("No configs found for '{}'", args[0]);
 				std::process::exit(1);
 			});
@@ -89,7 +87,7 @@ pub fn swap(mut config: &mut Config, args: &[String]) {
 }
 
 fn prompt_swap(config: &Config, name: &String) -> Option<ConfigEntry> {
-	let cfg_vec:&Vec<ConfigEntry> = config.config_entry(&name).unwrap_or_else(||{
+	let cfg_vec:&Vec<ConfigEntry> = config.config_entrys_by_name(&name).unwrap_or_else(||{
 		println!("No configs found for '{}'", name);
 		std::process::exit(1);
 	});

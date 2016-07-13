@@ -1,6 +1,6 @@
 [package]
-name = "pack"
+name = "pman"
 version = "0.1.0"
-authors = ["Ned"]
+authors = ["Ned Stuart <ned.stuart90@gmail.com>"]
 
 [dependencies]

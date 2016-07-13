@@ -1,12 +1,12 @@
 use utils::config::Config;
 
-pub const DESCRIPTION: &'static str = "rebuilds the command directory by making all links again";
+pub const DESCRIPTION: &'static str = "Rebuilds the command directory by making all links again";
 
 pub fn print_usage() {
 	println!("Usage: pman rebuild");
 }
 
-pub fn rebuild(config: &Config, args: &[String]) {
+pub fn run(config: Config, args: &[String]) {
 	let cmd_dir = config.cmd_dir();
 	for link in config.links() {
 		if let Err(e) = link.create_link(&cmd_dir, &cmd_dir) {

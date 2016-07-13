@@ -2,7 +2,7 @@ use utils;
 use utils::config::Link;
 use std;
 
-pub const DESCRIPTION: &'static str = "installs a new link";
+pub const DESCRIPTION: &'static str = "Installs a new link, a singular connection from one file to another (or dir)";
 
 pub fn print_usage() {
 	// TODO: this help text fields kinda weird, maybe re-write this?
@@ -21,7 +21,7 @@ pub fn print_usage() {
 			  \0       name       (required) Name of link.");
 }
 
-pub fn link(config: &mut utils::config::Config, args: &[String]) {
+pub fn run(mut config: utils::config::Config, args: &[String]) {
 	if args.len() < 1 {
 		print_usage();
 		std::process::exit(1);
@@ -35,14 +35,14 @@ pub fn link(config: &mut utils::config::Config, args: &[String]) {
 		}
 		let name = &args[1];
 		
-		add_link(config, name, &args[2], &args[2..]);
+		add_link(&mut config, name, &args[2], &args[2..]);
 	} else if cmd == "remove" {
 		if args.len() < 2 {
 			println!("Too few arguments for remove command. Expected:\n\0 pack link remove <name>");
 			std::process::exit(1);
 		}
 		let name = &args[1];
-		remove_link(config, name);
+		remove_link(&mut config, name);
 	} else {
 		print_usage();
 		std::process::exit(1);
