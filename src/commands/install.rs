@@ -1,8 +1,14 @@
 use utils;
 
+pub const DESCRIPTION: &'static str = "installs a new configuration group";
+
+pub fn print_usage() {
+	// TODO: uhh this way of printing text kinda stinks, i guess theres a nice macro called indoc which looks good. IDK tho
+	println!("I havent written this yet, edit the config yourself");
+}
+
 pub fn install(config: &utils::config::Config, args: &[String]) {
-	println!("Sorry but i didnt implement this yet");
-	
+	print_usage();
 //	config.get_config_entry(&args[0]);
 ////	config.g(&args[0]);
 //	println!("Running install");

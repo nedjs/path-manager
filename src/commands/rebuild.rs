@@ -1,5 +1,10 @@
 use utils::config::Config;
-use utils::config::ConfigEntry;
+
+pub const DESCRIPTION: &'static str = "rebuilds the command directory by making all links again";
+
+pub fn print_usage() {
+	println!("Usage: pman rebuild");
+}
 
 pub fn rebuild(config: &Config, args: &[String]) {
 	let cmd_dir = config.cmd_dir();

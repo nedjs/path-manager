@@ -1,15 +1,24 @@
-use utils;
-use commands::help;
 use utils::config::Config;
 use utils::config::ConfigEntry;
 use std;
-use std::io::prelude::*;  
+use std::io::prelude::*;
+
+
+pub const DESCRIPTION: &'static str = "updates the current installation for a configuration group";
+
+pub fn print_usage() {
+	println!("Usage: pman swap [name] <priority>\n\
+			 \0   name       (required) Name of configuration group\n\
+			 \0   priority   (optional) If not set you will be prompted to choose what config to activate\n\
+			 \0              however if set then the a config closest to but no less than this param will be selected,\n\
+			 \0              eg: cfg.priority>=priority. For the highest priority pass -1, for the lowest pass 0.");
+}
 
 pub fn swap(mut config: &mut Config, args: &[String]) {
 	
 	if args.len() == 0 {
-		println!("Expected additional argument <name>");
-		help::print_help();
+		println!("Expected additional argument [name]");
+		print_usage();
 	} else {
 		
 		let cfg_to_activate: Option<ConfigEntry>;

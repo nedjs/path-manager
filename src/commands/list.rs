@@ -1,6 +1,14 @@
 use utils::config::Config;
 use utils::config::ConfigEntry;
 
+pub const DESCRIPTION: &'static str = "lists registered links and configuration groups";
+
+pub fn print_usage() {
+	println!("Usage: pman list [name]\n\
+			 \0   name       (optional) Name of configuration group to list, \n\
+			 \0              if ommited then all links and configurations will be listed");
+}
+
 pub fn list(config: &Config, args: &[String]) {
 	
 	if args.len() == 0 { // list everything
@@ -10,12 +18,12 @@ pub fn list(config: &Config, args: &[String]) {
 		}
 		println!("");
 		println!("{} config group(s)", config.config_map().len());
-		for (key, vec) in config.config_map() {
+		for key in config.config_map().keys() {
 			println!("{}", key);
 			list_entrys(&config, &key);
 		}
 	} else {
-		list_entrys(&config, &args[0]);
+		list_entrys(&config, &args[0]); // just entries related to 1st argument
 	}
 }
 

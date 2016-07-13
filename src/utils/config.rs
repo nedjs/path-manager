@@ -2,16 +2,13 @@
 use std::env;
 use std;
 use std::fs;
-//use std::fs::DirEntry;
 use std::fs::File;
-use std::path;
 use std::path::PathBuf;
 use std::path::Path;
 use std::io::BufReader;
 use std::io;
 use std::collections::HashMap;
-use std::collections::hash_map::Keys;
-use std::os::windows::fs::{symlink_file, symlink_dir};
+use std::os::windows::fs::symlink_dir;
 
 use std::io::prelude::*;
 
