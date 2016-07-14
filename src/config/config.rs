@@ -330,6 +330,7 @@ impl Config {
 					std::process::exit(1);
 				});
 				map.insert(name.clone(), priority);
+				name.clear();
 			}
 			return Ok(());
 		}) {

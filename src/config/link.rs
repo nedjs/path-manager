@@ -47,7 +47,7 @@ impl Link {
 		} else {
 			// create batch link
 			let mut file = try!(File::create(&link_path));
-			try!(file.write_all(format!("@\"{}\" %*", source_path.to_str().unwrap()).as_bytes()));
+			try!(file.write_all(format!("@{:?} %*", source_path.to_str().unwrap()).as_bytes()));
 			
 			return Ok(source_path);
 		}
