@@ -1,12 +1,12 @@
-use utils::config::Config;
-use utils::config::ConfigEntry;
+use config::Config;
+use config::LinkGroup;
 
 pub const DESCRIPTION: &'static str = "Lists registered links and configuration groups";
 
 pub fn print_usage() {
 	println!("Usage: pman list [name]\n\
 			 \0   name       (optional) Name of configuration group to list, \n\
-			 \0              if ommited then all links and configurations will be listed");
+			 \0              if ommited then all link groups and standalone links will be listed");
 }
 
 pub fn run(config: Config, args: &[String]) {
@@ -16,8 +16,12 @@ pub fn run(config: Config, args: &[String]) {
 		for link in config.links() {
 			println!("   {} - {}", link.name, link.path);
 		}
-		println!("{} config group(s)", config.config_map().len());
-		for key in config.config_map().keys() {
+		println!("{} link group(s), * asterisk mark active groups", config.config_map().len());
+		let mut key_set: Vec<_> = config.config_map().iter().collect();
+		key_set.sort_by(|&(a, _), &(b, _)| a.cmp(&b));
+		
+		for kv in key_set {
+			let (key, _) = kv;	
 			println!("  {}", key);
 			list_entrys(&config, &key);
 		}
@@ -27,7 +31,7 @@ pub fn run(config: Config, args: &[String]) {
 }
 
 fn list_entrys(config: &Config, name:&String) {
-	let n_cfg:Option<&Vec<ConfigEntry>> = config.config_entrys_by_name(&name);
+	let n_cfg:Option<&Vec<LinkGroup>> = config.config_entrys_by_name(&name);
 	match n_cfg {
 		Some(cfg_vec) => {
 			for entry in cfg_vec {

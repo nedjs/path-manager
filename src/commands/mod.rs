@@ -1,5 +1,5 @@
 pub mod configure;
-pub mod install;
+pub mod group;
 pub mod list;
 pub mod swap;
 pub mod link;

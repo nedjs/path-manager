@@ -1,14 +1,11 @@
 use std::env;
 use std::ascii::AsciiExt;
 use commands::*;
-use std::collections::HashMap;
-use utils::config::{Config};
+use config::*;
 
 mod commands;
-
-mod utils {
-	pub mod config;
-}
+mod config;
+mod utils;
 
 fn main() {
 	let args: Vec<_> = env::args().collect();
@@ -28,31 +25,32 @@ fn main() {
 		}
 	}
 }
-fn run_pman(goal: &String, config: Option<Config>, addl_args: &[String]) {
+fn run_pman(goal: &String, config_opt: Option<Config>, addl_args: &[String]) {
 	
 	// these 2 goals dont need configuration to run, check for those
 	if "help".eq_ignore_ascii_case(goal) {
 		help::run(addl_args);
 	} else if "configure".eq_ignore_ascii_case(goal) {
-		configure::run(config, addl_args);
+		configure::run(config_opt, addl_args);
 	} else {
 		// these goals require configuration to exist. Make sure it does
-		if config.is_none() {
+		if let Some(mut config) = config_opt {
+			match goal.to_ascii_lowercase().as_ref() {
+				"group" => group::run(&mut config, addl_args),
+				"list" => list::run(config, addl_args),
+				"swap" => swap::run(config, addl_args),
+				"link" => link::run(config, addl_args),
+				"rebuild" => rebuild::run(config),
+				_ => {
+					println!("Unknown argument \"{}\"", goal);
+					help::print_help();
+					std::process::exit(2);
+				}
+			}
+		} else {
 			println!("pman is not configured yet!\nRun 'pman help configure' for more information");
 			std::process::exit(1);
 		}
 		
-		match goal.to_ascii_lowercase().as_ref() {
-			"install" => install::run(config.unwrap(), addl_args),
-			"list" => list::run(config.unwrap(), addl_args),
-			"swap" => swap::run(config.unwrap(), addl_args),
-			"link" => link::run(config.unwrap(), addl_args),
-			"rebuild" => rebuild::run(config.unwrap(), addl_args),
-			_ => {
-				println!("Unknown argument {:?}", goal);
-				help::print_help();
-				std::process::exit(2);
-			}
-		}
 	}
 }

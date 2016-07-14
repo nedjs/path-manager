@@ -1,13 +1,5 @@
 use std;
 use std::io::prelude::*;
-use std::slice::Iter;
-
-pub fn loop_args<F, T>(iter: Iter<T>, mut func:F) where F:FnMut(&mut Iter<T>, &T) {
-	let mut m_iter = iter;
-	while let Some(v) = m_iter.next() {
-		func(&mut m_iter, v);
-	}
-}
 
 /// prompts for user input and returns value into Option result
 pub fn prompt(question: &String, default: &String) -> Option<String> {

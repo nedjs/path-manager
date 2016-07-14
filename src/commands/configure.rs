@@ -1,13 +1,13 @@
-use utils::config::Config;
+use config::Config;
+use utils;
 use std;
 use std::ascii::AsciiExt;
-use std::io::prelude::*;
 
 pub const DESCRIPTION: &'static str = "Utility to help configure pman. Expecially useful when running for the first time";
 
 pub fn print_usage() {
-	println!("Usage: pman configure <options>\n\
-			 \0possible options are:\n\
+	println!("Usage: pman configure <args>\n\
+			 \0args are:\n\
 			 \0   -d,-dir <val>  Sets the directory to use for all command links. May want to run 'pman rebuild' afterwards.\n\
 			 \0                  Also may be used when running pman for the first time to configure the directory.\n\
 			 \0   -p,-prompt     Go through a series of prompts to update configuration.");
@@ -76,40 +76,15 @@ fn do_config_prompt(config: &mut Config) {
 	
 	let question = format!("Currently set to ({}): ", config.cmd_dir_str());
 	
-	println!("Enter new command directory. This may be a relative path, if so it is relative to this binary.\n\
+	println!("Enter new command directory, this directory will be used to place all links into. It would likely be ideal for it to be in your %PATH%.\n\
+			  This may be a relative path, if so it is relative to this binary.\n\
 			  You may press enter to leave the current value unchanged.");
 	
 	let mut new_dir = String::new();
-	while let None = prompt(&question, &mut new_dir, &config.cmd_dir_str()) {
+	while let None = utils::prompt_mut(&question, &mut new_dir, &config.cmd_dir_str()) {
 		println!("You must enter a value for the command directory.");
 	}
 	config.set_cmd_dir_str(new_dir);
-}
-
-fn prompt(question: &String, line: &mut String, default: &String) -> Option<()> {
-	print!("{}", question);
-	std::io::stdout().flush().ok();
-	line.clear();
-	
-	let mut buff = String::new();
-	std::io::stdin().read_line(&mut buff).expect("Did not enter a correct string"); // i wonder how they can not enter a correct string.. I think i pulled this off a tutorial
-	buff = String::from(buff.trim()); // trim to remove newline chars
-	
-	// i cant figure out how to replace the underlying string structure in regards to mutablity, this will probably work just fine
-	line.clear();
-	line.push_str(&buff);
-	
-	if line == "" {
-		if default == "" {
-			return None;
-		} else {
-			// i cant figure out how to replace the underlying string structure in regards to mutablity, this will probably work just fine
-			line.clear();
-			line.push_str(&default.clone());
-			return Some(());
-		}
-	}
-	return Some(());
 }
 
 

@@ -1,4 +1,3 @@
-use utils;
 use commands::*;
 use std::ascii::AsciiExt;
 
@@ -10,9 +9,9 @@ pub fn print_help() {
 			  command options are:\n\
 			  \0   configure  {configure}\n\
 			  \0   list       {list}\n\
-			  \0   install    {install}\n\
-			  \0   link       {link}\n\
+			  \0   group      {group}\n\
 			  \0   swap       {swap}\n\
+			  \0   link       {link}\n\
 			  \0   rebuild    {rebuild}\n\
 			  \0   help       {help}\n\
 			  \n\
@@ -20,7 +19,7 @@ pub fn print_help() {
 			  you may use 'pman help [command]' to display help specfically for a command.",
 		configure=configure::DESCRIPTION,
 		list=list::DESCRIPTION,
-		install=install::DESCRIPTION,
+		group=group::DESCRIPTION,
 		link=link::DESCRIPTION,
 		swap=swap::DESCRIPTION,
 		rebuild=rebuild::DESCRIPTION,
@@ -35,9 +34,9 @@ pub fn run(args: &[String]) {
 		if "configure".eq_ignore_ascii_case(&args[0]) {
 			println!("Description: {}", configure::DESCRIPTION);
 			configure::print_usage();
-		} else if "install".eq_ignore_ascii_case(&args[0]) {
-			println!("Description: {}", install::DESCRIPTION);
-			install::print_usage();
+		} else if "group".eq_ignore_ascii_case(&args[0]) {
+			println!("Description: {}", group::DESCRIPTION);
+			group::print_usage();
 		} else if "link".eq_ignore_ascii_case(&args[0]) {
 			println!("Description: {}", link::DESCRIPTION);
 			link::print_usage();
@@ -51,7 +50,7 @@ pub fn run(args: &[String]) {
 			println!("Description: {}", swap::DESCRIPTION);
 			swap::print_usage();
 		} else {
-			println!("Unkown help target {:?}", args[0]);
+			println!("Unkown help target \"{}\"", args[0]);
 		}
 	}
 }
