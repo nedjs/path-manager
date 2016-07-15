@@ -15,7 +15,7 @@ As a standalone tool which probably wont hit many keywords in search engines I d
 
 TODOS:
   - Search for "TODO" in project and you'll find my TODO comments
-  - Add tests, when I wrote this I was just learning the syntax. Next step is learning testing in rust... it really should be some testing
+  - Add tests, when I wrote this I was just learning the syntax. Next step is learning testing in rust... there should really be some testing
   - Add functionallity to allow for global configuration alterations at runtime which dont persist. Two I can think of are: specify config location (--cfg) and command directory (--cmd) 
 
 
@@ -31,12 +31,12 @@ Here i'll go through steps to setup a standard Java installation. This should be
 
 Ill be setting this up on my `D:\` where I have already made the folder `D:\bin` and added that folder to my systems `%PATH%` value. This is where `pman.exe` will live and the executables generated from pman will be saved, I recommend having this as its own folder and not sharing it with something else. Also dont be dumb and point it to your System32 folder or something of that nature.
 
-
 1. Setup the command directory to the same folder as the executable.
       ```
     > pman configure -d .
     Command directory updated to: '.'
     ```
+    
 2. Add my Java7 installation as a group. Groups are just a set of links to files in an installation. *Also in case you arent familar with windows multi line commands; the caret `^` is how you enter commands on more than one line.*
       ```
     > pman group java 170 ^
@@ -52,11 +52,13 @@ Ill be setting this up on my `D:\` where I have already made the folder `D:\bin`
     Adding link "java_home" => "../"
     Setting base directory D:\lib\java\jdk1.7.0_79\bin
     ```
+    
 3. Activate the group you just added
     ```
     > pman swap java 170
     Swapping to 170 - D:\lib\java\jdk1.7.0_79\bin
     ```
+    
 4. you should now have 3 new files in the command folder:
     ```
      bin/
@@ -64,6 +66,7 @@ Ill be setting this up on my `D:\` where I have already made the folder `D:\bin`
       javac.bat - runs D:\lib\java\jdk1.7.0_79\bin\javac.exe %*
       java_home - is a symlink to D:\lib\java\jdk1.7.0_79
     ```
+    
 5. At last everything is configured, you can use those 2 java executables from anywhere in your path
     ```
     > java -version
@@ -71,6 +74,7 @@ Ill be setting this up on my `D:\` where I have already made the folder `D:\bin`
     Java(TM) SE Runtime Environment (build 1.7.0_79-b15)
     Java HotSpot(TM) 64-Bit Server VM (build 24.79-b02, mixed mode)
     ```
+    
 6. You may have noticed the symlink for `java_home` I also set, you can now set your enviroment variable `%JAVA_HOME%` to point to `D:\bin\java_home` and when you swap between java versions the variable will always be valid.
 
 ### Sample usage (links)
@@ -88,7 +92,7 @@ Link created "pscp" => "D:\\lib\\putty\\pscp.exe"
 pscp: Release 0.67
 ```
 
-likewise to unlink something you can use the `pman link -u <name>` to remove it
+to unlink something you can use the `pman link -u <name>` to remove it
 ```
 > pscp -V
 pscp: Release 0.67
